@@ -1,0 +1,408 @@
+\documentclass[11pt, tipa, color]{./lingdoc}
+
+  \title[The lingdoc class]{The lingdoc class}
+  \author{Nicholas LaCara}
+  \affiliation{University of Toronto}
+  
+
+\usepackage{metalogo} %% For XeLaTeX macro
+\usepackage[]{lacara}
+
+%   \geometry{showframe}
+  
+%% Custom commands for this documentation:
+  \newcommand{\Command}[1]{\texttt{\textbackslash{}#1}}
+  \newcommand{\Option}[1]{\texttt{#1}}
+  \newcommand{\Package}[1]{\textsf{{#1}}}
+
+  \newcommand{\ipa}{\Abbrev{ipa}\xspace}
+  
+    \abstract{The \Package{lacara} class is a \LaTeX{} class designed by Nicholas LaCara for typesetting various kinds of linguistics documents and handouts. It provides several page layouts and numerous options for maximum flexibility.}
+    
+    \keywords{LaTeX, linguistics, typesetting}
+
+\begin{document}
+
+%   \begin{fullwidth}
+%   \begin{Abstract}
+    
+%   \end{Abstract}
+%   \end{fullwidth}
+  
+       
+  \tableofcontents
+  
+  \section{Background}
+  
+    The point of this class is to easily make available numerous formatting choices that I use in my handouts and manuscripts. Since I am a theoretical syntactician, much of the options provided by this package are oriented towards writing papers in linguistics (and syntax, specifically).
+
+  \section{Overview}
+  
+  \subsection{Requirements and dependencies}
+  
+    This class requires the following packages be installed. These are all standard packages.
+    
+      \begin{multicols}{3}
+	\begin{itemize}
+	  \item \Package{enumitem}
+	  \item \Package{fancyhdr}
+	  \item \Package{geometry}
+	  \item \Package{ifthen}
+	  \item \Package{ifxetex}
+	  \item \Package{marginnote}
+	  \item \Package{multicol}
+	  \item \Package{natbib}
+	  \item \Package{tcolorbox}
+	  \item \Package{titlesec}
+	  \item \Package{xcolor}
+	  \item \Package{xspace}
+	\end{itemize}
+	
+%       For \XeLaTeX:
+%       
+% 	\begin{itemize}
+% 	  \item \Package{mathspec}
+% 	  \item \Package{xunicode}
+% 	\end{itemize}
+
+      \end{multicols}
+      
+    \noindent The following packages are not necessary for, but are loaded if they are installed.\footnote{The package \Package{microtype}, and the fonts \Package{MinionPro}, \Package{newtxtt}, and \Package{AlegreyaSans} are not loaded if compiled with \XeLaTeX. \XeLaTeX will look for the \Package{mathspec} package.}
+    
+      \begin{multicols}{2}
+      
+	\begin{itemize}
+	    \item \Package{AlegreyaSans} (falls back to \Package{Montserrat})
+	    \item \Package{booktabs}
+	    \item \Package{microtype}
+	    \item \Package{MinionPro} (falls back to \Package{mathptmx})
+	    \item \Package{ulem}
+	\end{itemize}
+
+      \end{multicols}
+      
+    \noindent The package loads the following packages by default, but they may be disabled.
+    
+    
+      \begin{multicols}{2}\raggedcolumns
+	\begin{itemize}
+	  \item \Package{pst-jtree}
+	  \item \Package{pst-node}
+	  \item \Package{hyperref}
+	  \item \Package{cgloss4e}
+	\end{itemize}
+
+      \end{multicols}
+      
+    \noindent The following packages can be enabled by using certain class options:
+    
+      \begin{multicols}{2}\raggedcolumns
+
+	\begin{itemize}
+	  \item \Package{expex}
+	  \item \Package{gb4e}
+	  \item \Package{linguex}
+	  \item \Package{mathptmx}
+	  \item \Package{montserrat}
+	  \item \Package{OTtablx}
+	  \item \Package{tipa}
+	\end{itemize}
+      \end{multicols}
+
+    \noindent Most of these packages are available as part of standard \TeX\ distributions (such as \TeX{}Live).
+        
+  \section{Class features}
+
+  \subsection{Layouts}
+  
+    This class provides three different layouts for documents: a layout for academic papers, a layout for portrait handouts, and a layout for two-column landscape handouts. The class has been coded in such a way so as to make it easy to convert between layouts with minimal effort (\eg, to change a handout into a paper).
+  
+  \subsubsection{Article}
+  
+    The default layout provided by this class is a layout of writing papers and articles. It is a two-sided layout with a default 12pt font size and default 6-inch line width. This approximates the optimal line width for reading at that size (see \citealp[]{Bringhurst:2008}), and this scales depending on the font size is selected. Section numbers are set in the left margin by default. 
+  
+  \subsubsection{Portrait handout}
+  
+    The second layout is a portrait handout which typesets footnotes as margin notes in the right-hand margin. The body text is set at 11pt to accommodate the margin notes while still retaining readability. Section numbers, list numbers, and list bullets are set in the margin. To enable, call the \Option{handout} option when loading the class.\footnote{Because of the way margin notes  are indexed, changing a document from portrait handout layout to another layout will cause a crash when compiled. This error will disappear when compiled again.}
+  
+  \subsubsection{Landscape handout}
+  
+    The final option is a two-column landscape handout. This layout is set at 10pt to maximize use of space. Section numbers are not set in the margin, but are set at a larger font size to make them easier to see. To enable, call the \Option{landout} option when loading the class.
+  
+  \subsection{Special commands and environments}
+  
+    This class calls the \Package{article} as input, so all commands defined by that class are available here. In addition, several more commands are defined here.
+    
+  \subsubsection{Commands}
+        
+      \begin{itemize}[leftmargin=0em]
+	\item \Command{abstract} \\ 
+	  A replacement for the standard abstract environment. It will typeset the abstract as part of the document title. Because of how this works, this command must be called in the preamble. Calling \Command{abstract} in the document body will have no effect.
+	  
+	\item \Command{keywords} \\ 
+	  A place to put document keywords.\footnote{Keywords are stored in \Command{@keywords}.} This will typset the keywords in the preamble under the abstract and will include them in the \textsc{pdf} metadata. As with the \Command{abstract} command, this must be called in the preamble.
+
+	\item \Command{author} \\
+	  Usage is \Command{author[<short>]\{<full name>\}}. The short name is typeset is used in \textsc{pdf} if you want to include material in the title that \Package{hyperref} does not like.
+      
+	\item \Command{title} \\
+	  Usage is \Command{title[<short>]\{<full title>\}}. The short title is used in \textsc{pdf} metadata if you want to include material in the title that \Package{hyperref} does not like (do not use any \LaTeX{} commands in the short title).
+		
+        \item \Command{affiliaton} \\
+	  Typesets affiliation information after author name in title. Usage is \Command{affiliation\{<the\-place-you-work>\}}.\footnote{Affiliation is stored in \Command{@affiliation}.}
+        
+        \item \Command{event} \\
+	  Typesets event, class, or conference information in the title. Usage is \Command{event\{<event>\}}.\footnote{Event is stored in \Command{@event}.}
+	  
+      \end{itemize}
+      
+  \subsubsection{Environments}
+  
+      \begin{itemize}[leftmargin=0em]
+	\item The \texttt{Abstract} environment\\
+	  Creates a fullwidth box for your abstract and keywords and any other sort of front-matter-y stuff you might want. 
+	
+	\item The \texttt{framed} and \texttt{shaded} environments. \\
+	  The command \Command{framed} draws a box around material in the environment, while \Command{shaded} places a shaded box around it.\footnote{Older versions of this class used the \Package{framed} package to draw frames and boxes around material. This package was simple, but not very flexible, so its functionality has been reimplemented in this package with the \Package{tcolorbox} package.}
+	  
+	\item The \texttt{fullwidth} environment \\
+	  For use with the handout layout. Typesets material into the left margin.\marginnote{This does not yet work with the landscape handout layout. Be careful using it in documents that you may wish to set in this other layout.} \begin{verbatim}\begin{fullwidth} ... \end{fullwidth}\end{verbatim}
+	  
+
+	\end{itemize}
+
+
+  \subsection{Other features}
+  
+    This class provides several other features. \textsc{pdf} metadata is automatically generated based on the (slightly modified) \Command{author}, \Command{title}, and \Command{Keywords} command. The class also provides its own environment for linguistic examples, following the syntax of \Package{gb4e}. The code is taken from Alan \citeauthor{Munn:2010}'s \Package{gb4e-emulate}, which is more flexible. 
+    
+%   \subsection{Formatting}
+% 
+%     Under \LaTeX\ and pdf\LaTeX, documents are typeset in Minion Pro by default if it is installed. If Minion is not installed, the class falls back to Times using the \Package{mathptmx}.
+
+  \section{Package options}
+
+    
+  \subsection{Layouts}
+
+    This class defines three different layout options:
+    
+      \begin{enumerate}[leftmargin=0em]
+        \item \Option{article} \\ The paper option defines a portrait page with a default font size of 12pt, two-side margins, and footnotes. This option is called by default.
+        
+        \item \Option{handout} \\ The handout option defines a portrait handout with a default font size of 11pt. There are no footnotes; these are instead set as marginnotes; to facilitate switching between layouts, the command \verb+\footnote+ is redefined to be \verb+\marginnote+.
+        
+        \item \Option{landout} \\ The landout option defines a two-column, landscape handout, which is a common format for handouts in theoretical syntax. The font size is 10pt.
+      \end{enumerate}
+
+  \subsection{Typefaces}
+  
+    This class has a number of in-built options for typesetting documents in various typefaces. Options vary depending on whether the document is compiled with \LaTeX{}, \XeLaTeX, or pdf\LaTeX{}.
+    
+  \subsubsection[Plain LaTeX]{(Plain) \LaTeX{}}
+  
+    By default, this class typesets documents in Minion Pro when they are compiled with \LaTeX{} or pdf\LaTeX{}. To override this behavior, use one of the following options:
+  
+      \begin{itemize}[leftmargin=0em]
+        \item \Option{times} \\ 
+	  Calls Times typeface for math and text (using \Package{mathptmx}).
+	  
+        \item \Option{nofonts} \\ 
+	  Does not call any font; defaults to Computer Modern. Use this option if you want to call your own font options. Also use this option if you intend to use \XeLaTeX\ with the \Package{fontspec} package.
+	  
+	\item \Option{tipa} \\
+	  Loads the \Package{tipa} package for \ipa phonetic fonts.
+      \end{itemize}
+      
+%     \noindent None of these options affect the output if \XeLaTeX\ is used to compile the document. They will only affect plain \LaTeX\ and pdf\LaTeX.
+      
+%   \subsubsection[XeLaTeX]{\XeLaTeX}
+% 
+%     This class loads the \Package{mathspec} package by default when compiling with \XeLaTeX.
+%   
+%       \begin{itemize}
+%         \item \Option{Nofonts} \\ Disables \Package{mathspec} and plain \LaTeX{} fonts. Defaults to computer modern.
+%         
+%         \item \Option{XePSTricksOff} \\ Disables \Package{pstricks} drawing. Speeds up compilation time dramatically.
+%       \end{itemize}
+% 
+
+  \subsubsection[pdfLaTeX]{pdf\LaTeX{}}
+  
+    This package was not made with pdf\LaTeX{} in mind since I frequently use several packages based on \Package{pstricks}, and this is not compatible with pdf\LaTeX{}. These include \Package{pst-jtree} and \Package{OTtablx}. 
+
+    Generally, documents will compile as long as no code from these packages is included, but it may be useful to disable \Package{pst-jtree}.\footnote{This might also be useful if using other tree or drawing packages.}
+    
+      \begin{itemize}[leftmargin=0em]
+        \item \Option{nojtree} \\ Stops class from loading \Package{pst-jtree} and \Package{pst-node}.
+      \end{itemize}
+
+  \subsection{Font size and margins}
+  
+    Font size is controlled with the \Option{10pt}, \Option{11pt}, and \Option{12pt} options. In the Article layout, the line width scales depending on the font size chosen:
+    
+      \begin{center}
+	\begin{tabular}{lll}
+	  \toprule
+	    \textsc{Font Size} 	& \textsc{Line Width} 	& \textsc{Text height}\\
+	  \midrule
+	    10pt		& 5 in			& 7.5 in \\
+	    11pt		& 5.5 in 		& 8.25 in \\
+	    12pt		& 6 in			& 9 in \\
+	  \bottomrule
+	\end{tabular}
+      \end{center}
+
+    \noindent Margins can be adjusted manually by using the \Command{geometry} command from the \Package{geometry} package in the preamble. This is safe to do with the Article and Landout layouts, but use caution with the Handout layout.
+
+  \subsection{Linguistics packages}
+  
+    This class is set up to load a number of packages for typesetting linguistics documents. The packages that are loaded can be adjusted through various package options.
+
+  \subsubsection{Example packages}
+
+    This class has built-in code for numbered linguistic examples, which was taken from Alan Munn's \Package{gb4e-emulate}. The syntax of this environment is identical to that of \Package{gb4e}. However, it does not implement any of the additional things that \Package{gb4e} does; specifically, \Package{gb4e}'s automath is not implemented here. Thus, the symbols \textasciicircum\ and \_ are not redefined to work outside of mathmode. This is because this leads unwanted behavior for typesetting super- and subscripts together in mathmode.
+  
+    That said, the class provides options for calling other common example packages, as well as the original \Package{gb4e}. These also disable the built-in example environment.
+    
+      \begin{itemize}[leftmargin=0em]
+        \item \Option{expex} \\ Calls the package \Package{expex}.
+        \item \Option{gb4e} \\ Calls the package \Package{gb4e}, and enables automath.
+        \item \Option{linguex} \\ Calls the package \Package{linguex}
+        \item \Option{noex} \\ No example package will be called.
+      \end{itemize}
+
+  \subsubsection{Phonology}
+      
+    This class is geared toward use in theoretical syntax, but it can also be used for phonology. \ipa fonts \textipa{[s2\textteshlig\ \ae z\ DIs]} are provided by \Package{tipa} in plain/pdf \LaTeX. To use:
+
+      \begin{itemize}[leftmargin=0em]
+        \item \Option{tipa} \\
+          Provides the \Package{tipa} package for \ipa fonts.
+      \end{itemize}
+
+    \noindent Note that there are no \ipa fonts for Minion Pro. \ipa characters will be set in Times if Minion is used, but if consistency is what you are going for, you may want to call the option \Option{times} as well. 
+
+    If you want to typeset Optimality Theory tableaux, Nathan \citeauthor{Sanders:2014}' \Package{OTtablx} is much better than using a \verb+tabular+ environment. Provide the following option to load the package:
+
+      \begin{itemize}[leftmargin=0em]
+        \item \Option{ottab} \\
+          Loads the \Package{OTtablx} package for typesetting Optimality Theory tableaux.
+      \end{itemize}
+
+    \noindent By default \Package{OTtablx} is called with the \Option{noipa} option, since this makes it straightforward to do things other than phonology with the package. 
+
+
+  \subsubsection{Other packages}
+
+    This class calls \Package{pst-jtree} and \Package{pst-node} for drawing trees. To disable, call the following options:
+
+      \begin{itemize}[leftmargin=0em]
+        \item \Option{nojtree} \\ 
+          Stops class from loading \Package{pst-jtree} and \Package{pst-node}.
+      \end{itemize}
+      
+    \noindent This class also loads \Package{hyperref}. To disable:
+    
+      \begin{itemize}[leftmargin=0em]
+	  \item \Option{nohyperref} \\ Disables the \Package{hyperref} package.
+      \end{itemize}
+
+    \noindent This class also loads packages that depend on \Package{pstricks}. To keep these loaded, but disable \Package{pstricks} drawing:
+    
+      \begin{itemize}[leftmargin=0em]
+        \item \Option{PSTricksOff} \\
+	  Disables \Package{pstricks} drawing. Same as command \verb+\PSTricksOff+.
+      \end{itemize}
+
+
+  \subsection{Other options}\label{S:Other}
+  
+    There are several miscellaneous package options, mostly having to do with various optional formatting choices.
+  
+    \begin{itemize}[leftmargin=0em]
+      \item \Option{color} \\ Turns on colored section headings, title, page headings, and a few other things.
+      
+      \item \Option{draftfoot} \\ Adds a footer to the lower right of every page indicating that the document is a draft, with the date.
+
+      \item \Option{nocolor} \\ A few things that get colored by the \Package{hyperref} package, like citations and links, have color enabled by default even when the \Option{color} option isn't used. This disables all color introduced by the class, disabling colors introduced by \Package{hyperref} and superseding the \Option{color} option if it is also called.\footnote{This does not disable colors introduced by other packages or user commands.} To disable \Package{hyperref}, use the \Option{nohyperref} option.
+          
+      \item \Option{nohang} \\ Disables hanging material in the left margin. Now implemented for footnotes, too.
+
+	\item \Option{nonatbib} \\ This class uses the \Package{natbib} by default. This option disables it (if, for example, you would rather use \Package{biblatex}).
+    
+	\item \Option{notitle} \\ In this class, \Command{begin\{document\}} calls \Command{maketitle} by default.\footnote{This is a trick to solve a problem. \Command{maketitle} needs to be called before \Command{multicols\{2\}} in the landscape handout mode.} This command stops \Command{begin\{document\}} from calling \Command{maketitle}.
+      
+    \end{itemize}
+
+  \section{Usage and document structure}
+  
+    Although this class is based on the \Package{article} class, there are a few ways in which it differs. This section is mostly there to explain a few places where users of the \Package{article} class might get tripped up.
+  
+  \subsection{Preamble}
+  
+    The preamble should minimally include the following declarations:
+    
+\begin{verbatim}
+  \documentclass{lingdoc}
+
+  \author{Name of author}
+  \title{Title of the document}
+\end{verbatim}
+
+    \noindent However, other information, such as the short name and title, can be provided. Affiliation and event information are optional; \LaTeX\  will mention in the output if these elements are not used. After these commands, other packages can be loaded, and new commands defined:
+    
+\begin{verbatim}
+  \documentclass{lacara}
+
+    \author[short name]{Name of author}
+    \title[short title]{Full title: This document}
+    \affiliation{University of \LaTeX}
+    \event{Linguistics 101}
+
+  \usepackage{thebestpackage}
+  \newcommand{\hello}[1]{Hello, #1!}
+\end{verbatim}
+
+  \noindent The class provides the \verb+\abstract+ and \verb+\keywords+ commands for typesetting. Unlike the standard \LaTeX\ article class, \verb+\abstract+ must be called in the preamble.
+  
+  
+\begin{verbatim}
+    \abstract{This is a summary of this paper. You will learn the
+      answers to many questions.}
+	
+    \keywords{life, language, linguistics}
+\end{verbatim}
+
+    \noindent As noted above, using the \verb+\keywords+ command will add the keywords to the \textsc{pdf} metadata. You should separate your keywords with commas, but do not use \LaTeX\ commands.
+    
+  \subsection{Document body}
+  
+    As mentioned in Section \ref{S:Other}, the \verb+\maketitle+ command is called as part of \verb+\begin{document}+. There is no need to call this command at the beginning of the document. If you want to disable this functionality, use the package option \Option{notitle}.
+
+  \subsection{References}
+  
+    This class uses \Package{natbib} and calls the lingquiry2.bst bibstyle file by default. If you are using references, there are two options. You can use the \verb+\bibliography+ command as normal, or you can use the \verb+\References+ command. \verb+\References+ is meant primarily for the \Option{handout} layout, as it typesets the references in a two-column \verb+fullwidth+ environment with a smaller typeface size. The command works as follows:
+    
+\begin{verbatim}
+    \References{/home/you/work.bib}
+  \end{verbatim}
+  
+
+  \bibliography{./class.bib}
+  
+  \begin{table}
+	\centering
+	\begin{tabular}{lll}
+	  \toprule
+	    blha & hadsfa & adfasdf \\
+	  \midrule
+	    dafsa & adfksadf & adkjl \\
+	  \bottomrule
+	\end{tabular}
+
+    \caption{This is a test table. Here is some more text to test and see how well justification and hanging work. With luck this will look the way I want it to.}
+  \end{table}
+
+  
+\end{document}
